@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B6A4C" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#142019" media="(prefers-color-scheme: dark)">
+<title>Mi Galpón</title>
+<style>
+:root{
+  --bg:#EDF1E8; --panel:#fff; --ink:#1D2822; --mut:#5C6B62; --line:#D3DBCC;
+  --verde:#2B6A4C; --verde-osc:#1F4E38; --verde-soft:#E8F3EE;
+  --yema:#F2AE1C; --rojo:#B4432C; --rojo-soft:#F8DFD8;
+  --ok-bg:#DCEEDF; --ambar-bg:#FFF0C7; --ambar:#8A5A00; --azul:#1B74D4;
+  --backdrop:rgba(15,25,20,.5);
+  --serif:"Noto Serif",Georgia,"Times New Roman",serif;
+  --sans:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --shadow:0 8px 24px rgba(20,35,29,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12180F; --panel:#1C2419; --ink:#EAEFE4; --mut:#93A08A; --line:#333F2C;
+    --verde:#3E8362; --verde-osc:#BFE6CE; --verde-soft:#1E352B;
+    --yema:#F2AE1C; --rojo:#E08066; --rojo-soft:#402620;
+    --ok-bg:#213A2A; --ambar-bg:#3D3010; --ambar:#E8B84B; --azul:#71A9FF;
+    --backdrop:rgba(0,0,0,.62);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12180F; --panel:#1C2419; --ink:#EAEFE4; --mut:#93A08A; --line:#333F2C;
+  --verde:#3E8362; --verde-osc:#BFE6CE; --verde-soft:#1E352B;
+  --yema:#F2AE1C; --rojo:#E08066; --rojo-soft:#402620;
+  --ok-bg:#213A2A; --ambar-bg:#3D3010; --ambar:#E8B84B; --azul:#71A9FF;
+  --backdrop:rgba(0,0,0,.62);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:16px/1.45 var(--sans);color:var(--ink);background:var(--bg);-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button,input,select,textarea{font:inherit}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+
+.app{position:relative;max-width:560px;height:100%;margin:0 auto;display:flex;flex-direction:column}
+.top{padding:calc(14px + env(safe-area-inset-top,0px)) 18px 8px}
+.top h1{font:700 22px/1.2 var(--serif);margin:0}
+.top p{margin:2px 0 0;color:var(--mut);font-size:14px}
+main{flex:1;overflow-y:auto;padding:4px 16px 120px;-webkit-overflow-scrolling:touch}
+
+nav{display:flex;background:var(--panel);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;min-height:62px;border:0;background:none;padding:6px 2px;font:500 12px var(--sans);color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav .ic{width:52px;height:30px;border-radius:15px;display:grid;place-items:center}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current="page"]{color:var(--verde);font-weight:700}
+nav button[aria-current="page"] .ic{background:var(--ok-bg)}
+
+.fab{position:absolute;right:16px;bottom:calc(78px + env(safe-area-inset-bottom,0px));min-height:52px;padding:0 22px;border-radius:26px;border:0;background:var(--yema);color:#2A1C00;font:700 16px var(--sans);box-shadow:0 6px 16px rgba(20,40,30,.28)}
+
+.hero{display:flex;gap:16px;align-items:center;background:var(--verde);color:#fff;border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.ring{width:124px;height:124px;flex:none}
+.ringn{font:700 30px var(--serif);fill:#fff}
+.ringu{font:500 11px var(--sans);fill:rgba(255,255,255,.85)}
+.hero-t{flex:1;min-width:0}
+.hero-t .big{font:700 30px/1.1 var(--serif);margin:0}
+.hero-t .big span{font:500 15px var(--sans);opacity:.85}
+.hero-t p{margin:4px 0 12px;opacity:.92}
+.hero.solo{display:block}
+.hero.solo h2{font:700 21px/1.25 var(--serif);margin:0 0 6px}
+
+.sec{font:700 17px var(--serif);margin:24px 2px 8px}
+.panel{background:var(--panel);border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 2px 10px rgba(20,35,29,.02)}
+.pad{padding:14px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row b{font-variant-numeric:tabular-nums;text-align:right}
+.row.warnrow{color:var(--rojo);font-weight:600;display:block}
+.stockn{font:700 44px/1 var(--serif);margin:0;padding:16px 16px 6px}
+.stockn small{font:600 18px var(--sans)}
+.stockn span{font:500 18px var(--sans);color:var(--mut)}
+.chart{width:100%;height:auto;display:block;padding:10px 10px 0}
+.cd{font:11px var(--sans);fill:var(--mut)}
+.cap{color:var(--mut);font-size:13px;padding:0 14px 12px;margin:0}
+
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.kpi .small{display:block;color:var(--mut);font-size:12px;margin-bottom:6px}
+.kpi .big{font:700 24px/1.15 var(--serif);letter-spacing:-.02em}
+.kpi .trend{display:inline-block;margin-top:6px;font-size:12px;font-weight:600}
+.kpi .up{color:var(--verde)}
+.kpi .low{color:var(--rojo)}
+.kpi .mid{color:var(--ambar)}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px}
+.chip{flex:none;min-height:40px;padding:0 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--panel);font:600 14px var(--sans);color:var(--ink);cursor:pointer}
+.chip.on{background:var(--verde);border-color:var(--verde);color:#fff}
+
+.search{margin:8px 0 12px}
+.search input{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:46px;width:100%;color:var(--ink)}
+
+.list .item{border-top:1px solid var(--line)}
+.list .item:first-child{border-top:0}
+.item{display:flex;width:100%;text-align:left;gap:12px;align-items:center;justify-content:space-between;padding:14px;border:0;background:transparent;font:inherit;color:inherit;cursor:pointer}
+.item b{display:block}
+.sub{display:block;color:var(--mut);font-size:14px}
+.ped{display:block}
+.ped-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ped-top .money{font:700 17px var(--serif);white-space:nowrap}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:600;background:#E6EAE2;color:var(--mut);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--verde-osc)}
+.pill.bad{background:var(--rojo-bg);color:var(--rojo)}
+.pill.wait{background:var(--ambar-bg);color:var(--ambar)}
+.pill.tg{min-height:40px;padding:0 14px;border:0;font:600 14px var(--sans);cursor:pointer}
+.mini{min-height:40px;padding:0 14px;border-radius:12px;border:1.5px solid var(--verde);background:var(--panel);color:var(--verde);font:600 14px var(--sans)}
+.mas{color:var(--verde-osc);font-weight:700}
+.menos{color:var(--rojo);font-weight:700}
+
+.empty{text-align:center;padding:44px 24px;color:var(--mut)}
+.empty h3{font:700 18px var(--serif);color:var(--ink);margin:0 0 6px}
+
+.btn{min-height:48px;border:0;border-radius:14px;padding:0 18px;font:600 16px var(--sans);background:var(--verde);color:#fff;cursor:pointer}
+.btn.sec{background:transparent;color:var(--verde);box-shadow:inset 0 0 0 2px var(--verde)}
+.btn.warn{background:transparent;color:var(--rojo);box-shadow:inset 0 0 0 2px var(--rojo)}
+.btn.yema{background:var(--yema);color:#2A1C00;width:100%;min-height:46px;font-size:15px}
+.btn.wide{width:100%;margin-top:10px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btnrow .btn{flex:1;min-width:130px}
+.btnrow.pad{padding:8px 14px 16px}
+.hint{color:var(--mut);font-size:14px;margin:0 0 12px}
+
+input,select,textarea{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font:16px var(--sans);background:var(--panel);color:var(--ink)}
+textarea{min-height:120px;font:13px/1.35 ui-monospace,Menlo,monospace}
+.f{display:block;margin:0 0 12px}
+.f span,.lbl{display:block;font-weight:600;font-size:14px;margin:0 0 5px}
+.seg{display:flex;margin-bottom:12px}
+.seg button{flex:1;min-height:46px;border:1.5px solid var(--line);background:var(--panel);font:600 15px var(--sans);color:var(--ink);cursor:pointer}
+.seg button:first-child{border-radius:12px 0 0 12px}
+.seg button:last-child{border-radius:0 12px 12px 0;border-left:0}
+.seg button.on{background:var(--verde);border-color:var(--verde);color:#fff}
+.prev{background:var(--bg);border-radius:12px;padding:10px 12px;margin:4px 0 8px;min-height:44px}
+.warnt{color:var(--rojo);font-weight:600}
+.err{color:var(--rojo);font-weight:600;min-height:22px;margin:0 0 6px}
+
+.backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;max-height:92%;overflow-y:auto;background:var(--panel);border-radius:22px 22px 0 0;z-index:21;padding:0 18px calc(18px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+.sheet header{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--panel);padding:16px 0 10px;z-index:1}
+.sheet h2{font:700 19px var(--serif);margin:0}
+.x{width:44px;height:44px;border:0;border-radius:22px;background:var(--bg);font-size:22px;line-height:1;color:var(--ink);cursor:pointer}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);background:#1D2822;color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){.hero{flex-direction:column;text-align:center}.kpis{grid-template-columns:1fr}}
+@media (max-width:420px){.kpi .big{font-size:20px}}
+
+#reporte{display:none}
+@media print{
+  body>*:not(#reporte){display:none!important}
+  #reporte{display:block!important;color:#1D2822;background:#fff;font:14px/1.5 var(--sans);padding:0 6px}
+  #reporte h1{font:700 22px/1.2 var(--serif);margin:0 0 4px}
+  #reporte .sub{color:#5C6B62;margin:0 0 18px;font-size:13px}
+  #reporte h2{font:700 16px var(--serif);margin:20px 0 8px;border-bottom:1px solid #D3DBCC;padding-bottom:4px}
+  #reporte table{width:100%;border-collapse:collapse;font-size:13px}
+  #reporte th,#reporte td{text-align:left;padding:5px 8px;border-bottom:1px solid #E4E9DD}
+  #reporte th{color:#5C6B62;font-weight:600}
+  #reporte td:last-child,#reporte th:last-child{text-align:right}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top"><h1 id="nombre"></h1><p id="fechaHoy"></p></header>
+  <main id="view"></main>
+  <div id="fabSlot"></div>
+  <nav id="nav" aria-label="Secciones"></nav>
+</div>
+<div id="sheetRoot"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="reporte"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Datos ---------- */
+var KEY='galpon_app_v1';
+function defaults(){return {config:{nombre:'Mi galpón',porCanasta:30,precio:0,tema:'Automático',percentilAlerta:75},gallinas:[],dias:[],pedidos:[],clientes:[]};}
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw){
+      var o=JSON.parse(raw), d=defaults();
+      return {config:Object.assign(d.config,o.config||{}),gallinas:o.gallinas||[],dias:o.dias||[],pedidos:o.pedidos||[],clientes:o.clientes||[]};
+    }
+  }catch(e){}
+  return defaults();
+}
+var db=load();
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(db));}
+  catch(e){toast('No se pudo guardar en este teléfono. Haz una copia de seguridad.');}
+}
+function aplicarTema(){
+  var t=db.config.tema;
+  if(t==='Claro')document.documentElement.dataset.theme='light';
+  else if(t==='Oscuro')document.documentElement.dataset.theme='dark';
+  else delete document.documentElement.dataset.theme;
+}
+aplicarTema();
+
+var tab='inicio', periodo='7', filtro='todos', pedidoBuscar='';
+
+function estadoDePedidoBusqueda(p){
+  var q=(pedidoBuscar||'').trim().toLowerCase();
+  if(!q)return true;
+  var texto=(p.cliente||'')+' '+(p.notas||'')+' '+pedidoTxt(p)+' '+(p.pago||'')+' '+(p.entrega||'');
+  return texto.toLowerCase().indexOf(q)>=0;
+}
+
+/* ---------- Utilidades ---------- */
+var $=function(s){return document.querySelector(s);};
+var val=function(id){return document.getElementById(id).value;};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var uid=function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);};
+var num=function(v){var n=parseFloat(String(v==null?'':v).replace(/\s/g,'').replace(',','.'));return isFinite(n)?n:0;};
+var sum=function(a,f){return a.reduce(function(s,x){return s+f(x);},0);};
+var pad2=function(n){return String(n).padStart(2,'0');};
+var isoDate=function(d){return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate());};
+var hoy=function(){return isoDate(new Date());};
+function haceDias(n){var d=new Date();d.setDate(d.getDate()-n);return isoDate(d);}
+function fmtFecha(f){
+  try{return new Date(f+'T12:00:00').toLocaleDateString('es-CO',{weekday:'short',day:'numeric',month:'short'}).replace(/\./g,'');}
+  catch(e){return f;}
+}
+var nf=function(n){return Math.round(n).toLocaleString('es-CO');};
+var nf1=function(n){return n.toLocaleString('es-CO',{maximumFractionDigits:1});};
+var money=function(n){return '$'+Math.round(n).toLocaleString('es-CO');};
+var pctTxt=function(p){return nf1(Math.round(p*10)/10)+' %';};
+function pcBase(){return db.config.porCanasta>0?db.config.porCanasta:30;}
+function canastasTxt(eggs,pc){
+  pc=pc||pcBase(); eggs=Math.max(0,Math.round(eggs));
+  var c=Math.floor(eggs/pc), s=eggs%pc;
+  var a=c+(c===1?' canasta':' canastas');
+  return s?a+' + '+s+(s===1?' suelto':' sueltos'):a;
+}
+
+/* ---------- Cálculos ---------- */
+function totalGallinas(){return sum(db.gallinas,function(m){return m.tipo==='entrada'?m.cantidad:-m.cantidad;});}
+function buenos(d){return Math.max(0,d.huevos-(d.rotos||0));}
+function pcDe(p){return p.pc||pcBase();}
+function huevosPedido(p){return Math.round(num(p.canastas))*pcDe(p)+Math.round(num(p.sueltos));}
+function unidadDe(p){
+  if(p.unidad)return {u:p.unidad,n:p.cantidad};
+  return (p.sueltos>0)?{u:'Unidad',n:huevosPedido(p)}:{u:'Canasta',n:p.canastas};
+}
+function pedidoTxt(p){
+  var k=unidadDe(p), n=k.n;
+  if(k.u==='Canasta')return nf1(n)+(n===1?' canasta':' canastas');
+  if(k.u==='Media')return nf1(n)+(n===1?' media canasta':' medias canastas');
+  return nf1(n)+(n===1?' huevo':' huevos');
+}
+function stock(excl){
+  var rec=sum(db.dias,buenos), ent=0, comp=0;
+  db.pedidos.forEach(function(p){
+    if(p.id===excl)return;
+    if(p.entrega==='Entregado')ent+=huevosPedido(p); else comp+=huevosPedido(p);
+  });
+  return {rec:rec,ent:ent,comp:comp,total:rec-ent,libres:rec-ent-comp};
+}
+function posturaDia(d){return d.gallinas>0?d.huevos/d.gallinas*100:null;}
+function fechaLibre(){
+  for(var i=0;i<60;i++){var f=haceDias(i); if(!db.dias.some(function(d){return d.fecha===f;}))return f;}
+  return hoy();
+}
+function desde(){return periodo==='hoy'?hoy():periodo==='7'?haceDias(6):periodo==='30'?haceDias(29):'0000-00-00';}
+
+/* ---------- Clientes ---------- */
+function statsCliente(nombre){
+  var ln=(nombre||'').trim().toLowerCase();
+  var ps=db.pedidos.filter(function(p){return (p.cliente||'').trim().toLowerCase()===ln;});
+  var total=sum(ps,function(p){return p.total||0;});
+  var pendiente=sum(ps.filter(function(p){return p.pago==='Pendiente';}),function(p){return p.total||0;});
+  var canastasEq=sum(ps,function(p){return huevosPedido(p)/(p.pc||pcBase());});
+  return {ps:ps,total:total,pendiente:pendiente,canastasEq:canastasEq,n:ps.length};
+}
+
+/* ---------- Mortalidad y morbilidad ---------- */
+function semanaKey(fecha){
+  var d=new Date(fecha+'T12:00:00'), dia=(d.getDay()+6)%7;
+  d.setDate(d.getDate()-dia); return isoDate(d);
+}
+function percentil(arr,p){
+  if(!arr.length)return 0;
+  var s=arr.slice().sort(function(a,b){return a-b;}), idx=(p/100)*(s.length-1), lo=Math.floor(idx), hi=Math.ceil(idx);
+  return lo===hi?s[lo]:s[lo]+(s[hi]-s[lo])*(idx-lo);
+}
+function semanasHistoricas(){
+  var fechas=db.gallinas.map(function(m){return m.fecha;}).concat(db.dias.map(function(d){return d.fecha;}));
+  if(!fechas.length)return [];
+  var min=fechas.reduce(function(a,b){return b<a?b:a;});
+  var fin=semanaKey(hoy()), out=[], d=new Date(semanaKey(min)+'T12:00:00');
+  while(isoDate(d)<fin){out.push(isoDate(d));d.setDate(d.getDate()+7);}
+  return out;
+}
+function mortalidadPorSemana(){
+  var map={};
+  db.gallinas.forEach(function(m){
+    if(m.tipo==='baja'&&(m.causa||'Mortalidad')==='Mortalidad'){var k=semanaKey(m.fecha);map[k]=(map[k]||0)+m.cantidad;}
+  });
+  return map;
+}
+function morbilidadPorSemana(){
+  var map={};
+  db.dias.forEach(function(d){
+    if(d.enfermas){var k=semanaKey(d.fecha);map[k]=(map[k]||0)+d.enfermas;}
+  });
+  return map;
+}
+function morbilidadSemana(k){return (morbilidadPorSemana())[k]||0;}
+function alertaMortalidad(){
+  var semanas=semanasHistoricas();
+  if(semanas.length<3)return null;
+  var map=mortalidadPorSemana(), historicas=semanas.map(function(k){return map[k]||0;});
+  var p=db.config.percentilAlerta||75, umbral=percentil(historicas,p);
+  var claveActual=semanaKey(hoy()), actual=map[claveActual]||0;
+  if(actual>0&&actual>umbral)return {actual:actual,umbral:umbral,percentil:p};
+  return null;
+}
+function alertaMorbilidad(){
+  var semanas=semanasHistoricas();
+  if(semanas.length<3)return null;
+  var map=morbilidadPorSemana(), historicas=semanas.map(function(k){return map[k]||0;});
+  var p=db.config.percentilAlerta||75, umbral=percentil(historicas,p);
+  var claveActual=semanaKey(hoy()), actual=map[claveActual]||0;
+  if(actual>0&&actual>umbral)return {actual:actual,umbral:umbral,percentil:p};
+  return null;
+}
+
+/* ---------- Vistas ---------- */
+var ICONS={
+  inicio:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  huevos:'<path d="M12 3c3.5 0 6.5 6 6.5 10.2A6.5 6.5 0 0 1 12 20a6.5 6.5 0 0 1-6.5-6.8C5.5 9 8.5 3 12 3z"/>',
+  pedidos:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>',
+  gallinas:'<path d="M5 14c0-3.5 2.5-6 6-6h3c2 0 3.5 1 3.5 3v1c0 3.5-3 6-7 6-3.5 0-5.5-1.5-5.5-4z"/><path d="M14 8V6a1.5 1.5 0 0 1 3 0v2.5M17.5 11l2.5.5-2.5 1"/>',
+  ventas:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M14.8 9.8c0-1.3-1.2-2-2.8-2s-2.7.8-2.7 1.9c0 2.7 5.5 1.3 5.5 4 0 1.1-1.1 1.9-2.8 1.9s-2.9-.7-2.9-2"/>',
+  clientes:'<circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2"/><circle cx="17" cy="8.5" r="2.3"/><path d="M15.3 13.6c2.3.4 4.2 2.2 4.2 4.9"/>',
+  ajustes:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>'
+};
+var TABS=[['inicio','Inicio'],['huevos','Huevos'],['pedidos','Pedidos'],['ventas','Ventas'],['clientes','Clientes'],['ajustes','Ajustes']];
+
+function empty(t,d){return '<div class="empty"><h3>'+t+'</h3><p>'+d+'</p></div>';}
+function fld(id,label,attrs,v){return '<label class=\"f\"><span>'+label+'</span><input id=\"'+id+'\" value=\"'+esc(v)+'\" '+(attrs||'')+'></label>';}
+function seg(id,opts,v){
+  return '<div class=\"seg\" id=\"'+id+'\" role=\"radiogroup\">'+opts.map(function(o){
+    return '<button type=\"button\" role=\"radio\" aria-checked=\"'+(o===v)+'\" data-v=\"'+o+'\" class=\"'+(o===v?'on':'')+'\">'+o+'</button>';
+  }).join('')+'</div>';
+}
+function segVal(id){return document.querySelector('#'+id+' .on').dataset.v;}
+
+function ring(p){
+  var C=2*Math.PI*52, f=p==null?0:Math.min(100,p)/100;
+  return '<svg class=\"ring\" viewBox=\"0 0 120 120\" role=\"img\" aria-label=\"Postura '+(p==null?'sin datos':pctTxt(p))+'\">'+
+    '<circle cx=\"60\" cy=\"60\" r=\"52\" fill=\"none\" stroke=\"rgba(255,255,255,.22)\" stroke-width=\"10\"/>'+
+    '<circle cx=\"60\" cy=\"60\" r=\"52\" fill=\"none\" style=\"stroke:var(--yema)\" stroke-width=\"10\" stroke-linecap=\"round\" stroke-dasharray=\"'+C.toFixed(1)+'\" stroke-dashoffset=\"'+(C*(1-f)).toFixed(1)+'\" transform=\"rotate(-90 60 60)\"/>'+
+    '<text x=\"60\" y=\"63\" text-anchor=\"middle\" class=\"ringn\">'+(p==null?'–':nf1(Math.round(p*10)/10))+'</text>'+
+    '<text x=\"60\" y=\"82\" text-anchor=\"middle\" class=\"ringu\">% de postura</text></svg>';
+}
+
+function chart14(){
+  var out='<line x1=\"0\" x2=\"312\" y1=\"2\" y2=\"2\" style=\"stroke:var(--line)\" stroke-dasharray=\"3 3\"/>';
+  for(var i=13;i>=0;i--){
+    var f=haceDias(i), d=db.dias.find(function(x){return x.fecha===f;});
+    var p=d?posturaDia(d):null, x=(13-i)*22+4;
+    if(p==null){out+='<rect x=\"'+x+'\" y=\"92\" width=\"14\" height=\"2\" rx=\"1\" style=\"fill:var(--line)\"/>';}
+    else{var h=Math.max(3,Math.min(100,p)*0.9);out+='<rect x=\"'+x+'\" y=\"'+(92-h).toFixed(1)+'\" width=\"14\" height=\"'+h.toFixed(1)+'\" rx=\"3\" style=\"fill:var(--yema)\"/>';}
+    out+='<text x=\"'+(x+7)+'\" y=\"108\" text-anchor=\"middle\" class=\"cd\">'+parseInt(f.slice(8),10)+'</text>';
+  }
+  return '<svg viewBox=\"0 0 312 114\" class=\"chart\" role=\"img\" aria-label=\"Postura de los últimos 14 días\">'+out+'</svg>';
+}
+
+function resumenPeriodo(dd){
+  var dias=db.dias.filter(function(d){return d.fecha>=dd;}).sort(function(a,b){return a.fecha.localeCompare(b.fecha);});
+  var rec=sum(dias,function(d){return d.huevos||0;});
+  var rotos=sum(dias,function(d){return d.rotos||0;});
+  var alim=sum(dias,function(d){return d.alimento||0;});
+  var diasConGallinas=dias.filter(function(d){return d.gallinas>0;});
+  var pos=diasConGallinas.length>0?sum(diasConGallinas,function(d){return d.huevos/d.gallinas;})/diasConGallinas.length*100:null;
+  var ventas=ventasResumen(dd);
+  var pedidosPendientes=db.pedidos.filter(function(p){return p.pago==='Pendiente';}).length;
+  return {dias:dias,rec:rec,rotos:rotos,alim:alim,pos:pos,ventas:ventas,pedidosPendientes:pedidosPendientes};
+}
+
+function viewInicio(){
+  var tg=totalGallinas(), st=stock();
+  var hoyRec=db.dias.find(function(d){return d.fecha===hoy();});
+  var ult=hoyRec||db.dias.slice().sort(function(a,b){return b.fecha.localeCompare(a.fecha);})[0];
+  var p=ult?posturaDia(ult):null;
+
+  var periodoResumen=resumenPeriodo(desde());
+  var kpis=[
+    {label:'Gallinas',value:nf(tg)+'',meta:'en el galpón'},
+    {label:'Huevos',value:nf(periodoResumen.rec),meta:'en '+(periodoResumen.dias.length?periodoResumen.dias.length+' días':'este periodo')},
+    {label:'Postura',value:p==null?'–':pctTxt(p),meta:'hoy'},
+    {label:'Stock',value:canastasTxt(st.total),meta: st.total>=0? 'disponible':''},
+    {label:'Ventas',value:money(periodoResumen.ventas.total),meta:'periodo'},
+    {label:'Cobrado',value:money(periodoResumen.ventas.cobrado),meta:'periodo'}
+  ];
+
+  var h='';
+  if(tg===0){
+    h+='<section class=\"hero solo\"><h2>Empieza contando tus gallinas</h2><p>Con el total de gallinas puedo calcular el porcentaje de postura de cada día.</p><button class=\"btn yema\" data-act=\"gal-in\">Registrar mis gallinas</button></section>';
+  }else{
+    h+='<section class=\"hero\">'+ring(p)+'<div class=\"hero-t\"><p class=\"big\">'+nf(tg)+' <span>gallinas</span></p><p>'+
+      (hoyRec?nf(hoyRec.huevos)+' huevos hoy':ult?'Último registro: '+fmtFecha(ult.fecha):'Aún no hay recogidas')+
+      '</p><button class=\"btn yema\" data-act=\"hoy\">'+(hoyRec?'Editar recogida de hoy':'Registrar recogida de hoy')+'</button></div></section>';
+  }
+
+  h+='<div class=\"kpis\">'+kpis.map(function(k){
+    var cls='up';
+    if(k.label==='Stock'){
+      cls=st.total<0?'low':'up';
+    }else if(k.label==='Ventas'){
+      cls='up';
+    }
+    return '<div class=\"kpi\"><span class=\"small\">'+k.label+'</span><div class=\"big\">'+k.value+'</div><span class=\"trend '+cls+'\">'+k.meta+'</span></div>';
+  }).join('')+'</div>';
+
+  var alerta=alertaMortalidad(), alertaE=alertaMorbilidad();
+  if(alerta)h+='<div class=\"panel pad\" style=\"border-color:var(--rojo);margin-bottom:12px\"><p class=\"row warnrow\" style=\"padding:0;border:0\">⚠ Esta semana llevas '+nf(alerta.actual)+' bajas por mortalidad, más que en la mayoría de las semanas anteriores. Revisa la salud del lote.</p></div>';
+  if(alertaE)h+='<div class=\"panel pad\" style=\"border-color:var(--rojo);margin-bottom:12px\"><p class=\"row warnrow\" style=\"padding:0;border:0\">⚠ Esta semana reportaste '+nf(alertaE.actual)+' gallinas enfermas, más que en la mayoría de las semanas anteriores. Revisa la salud del lote.</p></div>';
+
+  var c0=Math.floor(Math.max(0,st.total)/pcBase()), s0=Math.max(0,st.total)%pcBase();
+  h+='<h2 class=\"sec\">En el galpón</h2><div class=\"panel\"><p class=\"stockn\">'+c0+' <small>'+(c0===1?'canasta':'canastas')+'</small> <span>+ '+s0+(s0===1?' suelto':' sueltos')+'</span></p>';
+  h+='<div class=\"row\"><span>Huevos sin vender</span><b>'+nf(Math.max(0,st.total))+'</b></div>';
+  if(st.comp>0)h+='<div class=\"row\"><span>Encargos por entregar</span><b>'+canastasTxt(st.comp)+'</b></div><div class=\"row\"><span>Libres para vender</span><b>'+canastasTxt(st.libres)+'</b></div>';
+  if(st.total<0)h+='<div class=\"row warnrow\">Entregaste más huevos de los que registraste. Revisa las recogidas y los pedidos.</div>';
+  h+='</div>';
+
+  var dd=desde();
+  var dsel=db.dias.filter(function(d){return d.fecha>=dd;});
+  var dg=dsel.filter(function(d){return d.gallinas>0;});
+  var rec=sum(dsel,function(d){return d.huevos;}), rotos=sum(dsel,function(d){return d.rotos||0;});
+  var gd=sum(dg,function(d){return d.gallinas;});
+  var pos=gd>0?sum(dg,function(d){return d.huevos;})/gd*100:null;
+  var alim=sum(dsel,function(d){return d.alimento||0;});
+  var gpd=gd>0&&alim>0?alim*1000/gd:null;
+  var psel=db.pedidos.filter(function(x){return x.fecha>=dd;});
+  var vend=sum(psel.filter(function(x){return x.entrega==='Entregado';}),huevosPedido);
+  var cobrado=sum(psel.filter(function(x){return x.pago==='Pagado';}),function(x){return x.total||0;});
+  var porCobrar=sum(db.pedidos.filter(function(x){return x.pago==='Pendiente';}),function(x){return x.total||0;});
+
+  h+='<h2 class=\"sec\">Resumen</h2><div class=\"chips\">'+[['hoy','Hoy'],['7','7 días'],['30','30 días'],['todo','Todo']].map(function(o){
+    return '<button class=\"chip'+(periodo===o[0]?' on':'')+'" data-act=\"periodo\" data-v=\"'+o[0]+'\">'+o[1]+'</button>';}).join('')+'</div>';
+  h+='<div class=\"panel\">'+
+    '<div class=\"row\"><span>Huevos recogidos</span><b>'+nf(rec)+(rotos?' ('+nf(rotos)+' rotos)':'')+'</b></div>'+
+    '<div class=\"row\"><span>Postura promedio</span><b>'+(pos==null?'–':pctTxt(pos))+'</b></div>'+
+    '<div class=\"row\"><span>Alimento echado</span><b>'+nf1(alim)+' kg</b></div>'+
+    '<div class=\"row\"><span>Alimento por gallina</span><b>'+(gpd==null?'–':nf(gpd)+' g al día')+'</b></div>'+
+    '<div class=\"row\"><span>Vendido</span><b>'+canastasTxt(vend)+'</b></div>'+
+    '<div class=\"row\"><span>Dinero cobrado</span><b>'+money(cobrado)+'</b></div>'+
+    '<div class=\"row\"><span>Por cobrar (todos los pedidos)</span><b>'+money(porCobrar)+'</b></div></div>';
+
+  h+='<h2 class=\"sec\">Postura de los últimos 14 días</h2><div class=\"panel\">'+chart14()+'<p class=\"cap\">Cada barra es un día. La línea punteada marca el 100 %.</p></div>';
+  return h;
+}
+
+function viewHuevos(){
+  var l=db.dias.slice().sort(function(a,b){return b.fecha.localeCompare(a.fecha);});
+  if(!l.length)return empty('Aún no hay recogidas','Registra los huevos del día para ver las canastas, los sueltos y la postura.');
+  return '<div class=\"panel list\">'+l.map(function(d){
+    var b=buenos(d), p=posturaDia(d);
+    var cls=p==null?'':p>=80?'ok':p>=60?'wait':'bad';
+    return '<button class=\"item\" data-act=\"dia-edit\" data-id=\"'+d.id+'\"><div><b>'+fmtFecha(d.fecha)+'</b>'+
+      '<span class=\"sub\">'+nf(d.huevos)+' huevos'+(d.rotos?', '+nf(d.rotos)+' rotos':'')+'</span>'+
+      '<span class=\"sub\">'+canastasTxt(b)+'</span>'+
+      '<span class=\"sub\">'+(d.alimento?nf1(d.alimento)+' kg de alimento, ':'')+nf(d.gallinas)+' gallinas</span></div>'+
+      '<span class=\"pill '+cls+'\">'+(p==null?'Sin dato':pctTxt(p))+'</span></button>';
+  }).join('')+'</div>';
+}
+
+function viewPedidos(){
+  var all=db.pedidos.slice().sort(function(a,b){return b.fecha.localeCompare(a.fecha)||b.id.localeCompare(a.id);});
+  var st=stock();
+  var porCobrar=sum(all.filter(function(p){return p.pago==='Pendiente';}),function(p){return p.total||0;});
+  var pedidosFiltrados=all.filter(function(p){return filtro==='todos'?true:(filtro==='cobrar'?p.pago==='Pendiente':filtro==='entregar'?p.entrega==='Encargo':filtro==='listos'?p.pago==='Pagado'&&p.entrega==='Entregado':true);}).filter(estadoDePedidoBusqueda);
+
+  var h='<div class=\"panel\"><div class=\"row\"><span>Por cobrar</span><b>'+money(porCobrar)+'</b></div><div class=\"row\"><span>Por entregar</span><b>'+canastasTxt(st.comp)+'</b></div></div>';
+  h+='<div class=\"search\"><input id=\"pedidoSearch\" placeholder=\"Buscar por cliente, nota o pedido\" value=\"'+esc(pedidoBuscar)+'\"></div>';
+  h+='<div class=\"chips\" style=\"margin-top:2px\">'+[['todos','Todos'],['cobrar','Por cobrar'],['entregar','Por entregar'],['listos','Completos']].map(function(o){
+    return '<button class=\"chip'+(filtro===o[0]?' on':'')+'" data-act=\"filtro\" data-v=\"'+o[0]+'\">'+o[1]+' ('+ (o[0]==='todos'?all.length:o[0]==='cobrar'?all.filter(function(p){return p.pago==='Pendiente';}).length:o[0]==='entregar'?all.filter(function(p){return p.entrega==='Encargo';}).length:all.filter(function(p){return p.pago==='Pagado'&&p.entrega==='Entregado';}).length) +')</button>';}).join('')+'</div>';
+  if(!all.length)return h+empty('Aún no hay pedidos','Anota un pedido con su cliente, las canastas y si ya está pago o entregado.');
+  if(!pedidosFiltrados.length)return h+empty('No hay pedidos aquí','Cambia el filtro o borra la búsqueda para ver los demás.');
+  h+='<p class=\"cap\">Toca el estado de pago o de entrega para cambiarlo sin abrir el pedido.</p><div class=\"panel list\">'+pedidosFiltrados.map(function(p){
+    return '<div class=\"item ped\" role=\"button\" tabindex=\"0\" data-act=\"pedido-edit\" data-id=\"'+p.id+'\">'+
+      '<div class=\"ped-top\"><b>'+(esc(p.cliente)||'Sin nombre')+'</b><span class=\"money\">'+money(p.total||0)+'</span></div>'+
+      '<span class=\"sub\">'+pedidoTxt(p)+', '+fmtFecha(p.fecha)+(p.entrega==='Encargo'&&p.fechaEntrega?', entregar el '+fmtFecha(p.fechaEntrega):'')+'</span>'+
+      '<div class=\"pills\">'+
+        '<button type=\"button\" class=\"pill tg '+(p.pago==='Pagado'?'ok':'bad')+'\" data-act=\"tog-pago\" data-id=\"'+p.id+'\">'+(p.pago==='Pagado'?'Pagado':'Pendiente de pago')+' ⇄</button>'+
+        '<button type=\"button\" class=\"pill tg '+(p.entrega==='Entregado'?'ok':'wait')+'\" data-act=\"tog-ent\" data-id=\"'+p.id+'\">'+p.entrega+' ⇄</button></div>'+
+      '</div>';
+  }).join('')+'</div>';
+  return h;
+}
+
+function ventasResumen(desde_){
+  var ps=db.pedidos.filter(function(p){return p.fecha>=desde_;});
+  var grp={Canasta:{n:0,h:0},Media:{n:0,h:0},Unidad:{n:0,h:0}};
+  ps.forEach(function(p){
+    var u=unidadDe(p), k=grp[u.u]||grp.Unidad;
+    k.n+=u.n; k.h+=huevosPedido(p);
+  });
+  var total=sum(ps,function(p){return p.total||0;});
+  var cobrado=sum(ps.filter(function(p){return p.pago==='Pagado';}),function(p){return p.total||0;});
+  var pend=total-cobrado;
+  return {ps:ps,grp:grp,total:total,cobrado:cobrado,pend:pend};
+}
+
+function viewVentas(){
+  var r=ventasResumen(desde());
+  var topClientes=db.clientes.slice().map(function(c){ return {c:c, s:statsCliente(c.nombre)}; }).filter(function(x){return x.s.total>0;}).sort(function(a,b){return b.s.total-a.s.total;}).slice(0,3);
+  var h='<h2 class=\"sec\">Ventas</h2><div class=\"chips\">'+[['hoy','Hoy'],['7','7 días'],['30','30 días'],['todo','Todo']].map(function(o){
+    return '<button class=\"chip'+(periodo===o[0]?' on':'')+'" data-act=\"periodo\" data-v=\"'+o[0]+'\">'+o[1]+'</button>';}).join('')+'</div>';
+  h+='<div class=\"panel\">'+
+    '<p class=\"stockn\">'+money(r.total)+' <small>vendido</small></p>'+
+    '<div class=\"row\"><span>Dinero cobrado</span><b>'+money(r.cobrado)+'</b></div>'+
+    '<div class=\"row\"><span>Falta por cobrar</span><b>'+money(r.pend)+'</b></div>'+
+    '</div>';
+
+  h+='<h2 class=\"sec\">Huevos vendidos por tipo</h2><div class=\"panel\">'+
+    '<div class=\"row\"><span>Canastas</span><b>'+nf1(r.grp.Canasta.n)+' ('+nf(r.grp.Canasta.h)+' huevos)</b></div>'+
+    '<div class=\"row\"><span>Medias canastas</span><b>'+nf1(r.grp.Media.n)+' ('+nf(r.grp.Media.h)+' huevos)</b></div>'+
+    '<div class=\"row\"><span>Huevos sueltos</span><b>'+nf(r.grp.Unidad.n)+'</b></div>'+
+    '<div class=\"row\"><span>Total de huevos vendidos</span><b>'+nf(r.grp.Canasta.h+r.grp.Media.h+r.grp.Unidad.h)+'</b></div>'+
+    '</div>';
+
+  if(topClientes.length){
+    h+='<h2 class=\"sec\">Top clientes</h2><div class=\"panel list\">'+topClientes.map(function(x){
+      return '<div class=\"item\" style=\"cursor:default\"><div><b>'+esc(x.c.nombre)+'</b><span class=\"sub\">'+money(x.s.total)+' vendidos · '+nf1(x.s.canastasEq)+' canastas equivalentes</span></div><span class=\"pill ok\">'+(x.s.pendiente>0?money(x.s.pendiente)+' por cobrar':'Al día')+'</span></div>';
+    }).join('')+'</div>';
+  }
+
+  if(!r.ps.length)h+='<p class=\"cap\">No hay pedidos en este periodo.</p>';
+  return h;
+}
+
+function viewClientes(){
+  var registrados=db.clientes.slice();
+  var nombresReg=registrados.map(function(c){return c.nombre.trim().toLowerCase();});
+  var nombresPed=Array.from(new Set(db.pedidos.map(function(p){return (p.cliente||'').trim();}).filter(Boolean)));
+  var frecuentes=nombresPed.filter(function(n){return nombresReg.indexOf(n.toLowerCase())<0;});
+
+  var h='<button class=\"btn wide\" style=\"margin-bottom:14px\" data-act=\"cli-new\">+ Nuevo cliente</button>';
+  if(!registrados.length&&!frecuentes.length)return h+empty('Aún no hay clientes','Anota un cliente para llevar su historial o un precio especial.');
+  
+  if(registrados.length){
+    var conStats=registrados.map(function(c){return {c:c,s:statsCliente(c.nombre)};});
+    conStats.sort(function(a,b){return (b.s.pendiente-a.s.pendiente)||(b.s.total-a.s.total);});
+    h+='<h2 class=\"sec\">Directorio</h2><div class=\"panel list\">'+conStats.map(function(x){
+      var c=x.c, s=x.s;
+      return '<button class=\"item\" data-act=\"cli-open\" data-id=\"'+c.id+'\"><div><b>'+esc(c.nombre)+'</b>'+
+        '<span class=\"sub\">'+(s.n?nf1(s.canastasEq)+' canastas compradas':'Sin compras todavía')+(c.precio?' · precio especial':'')+'</span></div>'+
+        '<span'+(s.pendiente>0?' class=\"menos\"':' class=\"sub\"')+'>'+(s.pendiente>0?money(s.pendiente)+' por cobrar':'Al día')+'</span></button>';
+    }).join('')+'</div>';
+  }
+  if(frecuentes.length){
+    var conStats2=frecuentes.map(function(n){return {n:n,s:statsCliente(n)};});
+    conStats2.sort(function(a,b){return b.s.n-a.s.n;});
+    h+='<h2 class=\"sec\">Clientes frecuentes sin registrar</h2><p class=\"cap\">Compraron alguna vez pero no están en tu directorio. Agrégalos para asignarles un precio especial.</p><div class=\"panel list\">'+conStats2.map(function(x){
+      return '<div class=\"item\" style=\"cursor:default\"><div><b>'+esc(x.n)+'</b><span class=\"sub\">'+x.s.n+(x.s.n===1?' pedido':' pedidos')+' · '+money(x.s.total)+'</span></div>'+
+        '<button type=\"button\" class=\"mini\" data-act=\"cli-add\" data-nom=\"'+esc(x.n)+'\">Agregar</button></div>';
+    }).join('')+'</div>';
+  }
+  return h;
+}
+
+function fichaCliente(id){
+  var c=db.clientes.find(function(x){return x.id===id;});
+  if(!c)return;
+  var s=statsCliente(c.nombre);
+  var h='<div class=\"panel pad\">'+
+    (c.telefono?'<p class=\"hint\" style=\"margin:0 0 10px\">'+esc(c.telefono)+'</p>':'')+
+    '<div class=\"row\" style=\"padding:0 0 8px;border:0\"><span>Precio especial</span><b>'+(c.precio?money(c.precio)+' la canasta':'Precio normal')+'</b></div>'+
+    '<div class=\"row\" style=\"padding:8px 0;border-top:1px solid var(--line)\"><span>Comprado en total</span><b>'+money(s.total)+'</b></div>'+
+    '<div class=\"row\" style=\"padding:8px 0;border-top:1px solid var(--line)\"><span>Saldo pendiente</span><b style=\"'+(s.pendiente>0?'color:var(--rojo)':'')+'\">'+money(s.pendiente)+'</b></div>'+
+    '<div class=\"row\" style=\"padding:8px 0;border-top:1px solid var(--line)\"><span>Canastas equivalentes compradas</span><b>'+nf1(s.canastasEq)+'</b></div>'+
+    (c.notas?'<div class=\"row\" style=\"padding:8px 0;border-top:1px solid var(--line)\"><span>Notas</span><b style=\"text-align:right;font-weight:400\">'+esc(c.notas)+'</b></div>':'')+
+    '</div>';
+  h+='<h3 class=\"lbl\" style=\"margin-top:16px\">Historial de compras</h3>';
+  if(!s.ps.length){
+    h+='<p class=\"hint\">Aún no hay pedidos de este cliente.</p>';
+  }else{
+    var ps=s.ps.slice().sort(function(a,b){return b.fecha.localeCompare(a.fecha);});
+    h+='<div class=\"panel list\">'+ps.map(function(p){
+      return '<button class=\"item\" data-open-pedido data-id=\"'+p.id+'\"><div><b>'+fmtFecha(p.fecha)+'</b><span class=\"sub\">'+esc(pedidoTxt(p))+'</span></div>'+
+        '<div style=\"text-align:right\"><span class=\"money\" style=\"font:700 15px var(--serif)\">'+money(p.total||0)+'</span><br><span class=\"pill '+(p.pago==='Pagado'?'ok':'bad')+'\" style=\"margin-top:4px\">'+p.pago+'</span></div></button>';
+    }).join('')+'</div>';
+  }
+  h+='<div class=\"btnrow\" style=\"margin-top:16px\"><button class=\"btn\" data-do=\"pedido\">Nuevo pedido</button><button class=\"btn sec\" data-do=\"editar\">Editar cliente</button></div>'+
+    '<button class=\"btn warn wide\" data-do=\"quitar\">Quitar del directorio</button>';
+  openSheet(c.nombre,h);
+  act.editar=function(){openClienteForm(c.id);};
+  act.pedido=function(){closeSheet();openPedido(null,c.nombre);};
+  act.quitar=function(){
+    confirmSheet('¿Quitar a '+esc(c.nombre)+' del directorio?','Sus pedidos siguen en Pedidos, pero se pierde el precio especial.','Quitar',function(){
+      db.clientes=db.clientes.filter(function(x){return x.id!==c.id;});save();render();toast('Cliente quitado');
+    });
+  };
+}
+
+function openClienteForm(id,nombreSug){
+  var ex=id?db.clientes.find(function(x){return x.id===id;}):null;
+  var c=ex||{nombre:nombreSug||'',telefono:'',precio:'',notas:''};
+  openSheet(ex?'Editar cliente':'Nuevo cliente',
+    fld('cl-nombre','Nombre','autocomplete=\"off\"',c.nombre)+
+    fld('cl-tel','Teléfono (opcional)','inputmode=\"tel\" autocomplete=\"off\"',c.telefono)+
+    fld('cl-precio','Precio especial por canasta (opcional)','inputmode=\"numeric\" autocomplete=\"off\"',c.precio)+
+    '<p class=\"hint\" style=\"margin:-6px 0 10px\">Si lo dejas vacío, se usa el precio normal del galpón.</p>'+
+    fld('cl-notas','Notas (opcional)','autocomplete=\"off\"',c.notas)+
+    '<p class=\"err\" id=\"err\" role=\"alert\"></p>'+
+    '<div class=\"btnrow\"><button class=\"btn\" data-do=\"save\">Guardar</button>'+(ex?'<button class=\"btn warn\" data-do=\"del\">Eliminar</button>':'')+'</div>');
+  act.save=function(){
+    var nombre=val('cl-nombre').trim();
+    if(!nombre)return err('Escribe el nombre del cliente.');
+    if(db.clientes.some(function(x){return x.nombre.trim().toLowerCase()===nombre.toLowerCase()&&(!ex||x.id!==ex.id);}))return err('Ya hay un cliente con ese nombre.');
+    var rec={id:ex?ex.id:uid(),nombre:nombre,telefono:val('cl-tel').trim(),precio:num(val('cl-precio'))||'',notas:val('cl-notas').trim()};
+    if(ex)Object.assign(ex,rec); else db.clientes.push(rec);
+    save();closeSheet();render();toast('Cliente guardado');
+  };
+  act.del=function(){
+    confirmSheet('¿Quitar este cliente del directorio?','Sus pedidos siguen en Pedidos, pero se pierde el precio especial.','Quitar',function(){
+      db.clientes=db.clientes.filter(function(x){return x.id!==ex.id;});save();render();toast('Cliente quitado');
+    });
+  };
+  if(!ex)setTimeout(function(){var i=document.getElementById('cl-nombre');if(i)i.focus();},60);
+}
+
+function viewAjustes(){
+  var c=db.config, tg=totalGallinas();
+  var mov=db.gallinas.slice().sort(function(a,b){return b.fecha.localeCompare(a.fecha)||b.id.localeCompare(a.id);});
+  var h='<h2 class=\"sec\">Galpón</h2><div class=\"panel pad\">'+
+    fld('c-nombre','Nombre del galpón','autocomplete=\"off\"',c.nombre)+
+    fld('c-pc','Huevos por canasta','inputmode=\"numeric\"',c.porCanasta)+
+    fld('c-precio','Precio de una canasta (pesos)','inputmode=\"numeric\"',c.precio||'')+
+    '<button class=\"btn wide\" style=\"margin-top:0\" data-act=\"cfg-save\">Guardar ajustes</button></div>';
+
+  h+='<h2 class=\"sec\">Apariencia</h2><div class=\"panel pad\">'+
+    '<p class=\"lbl\">Tema</p>'+seg('s-tema',['Automático','Claro','Oscuro'],db.config.tema||'Automático')+
+    '<p class=\"hint\" style=\"margin:0\">Automático sigue el tema que tenga puesto tu teléfono.</p></div>';
+
+  h+='<h2 class=\"sec\">Gallinas</h2><div class=\"panel\"><p class=\"stockn\">'+nf(tg)+' <small>gallinas</small></p><div class=\"btnrow pad\"><button class=\"btn\" data-act=\"gal-in\">Entraron gallinas</button><button class=\"btn sec\" data-act=\"gal-out\">Salieron gallinas</button></div>';
+  if(mov.length){
+    h+='<div class=\"list\">'+mov.slice(0,8).map(function(m){
+      var sub=m.tipo==='entrada'?esc(m.motivo||'Entrada'):((m.causa||'Salida')+(m.detalle?': '+esc(m.detalle):''));
+      return '<button class=\"item\" data-act=\"gal-edit\" data-id=\"'+m.id+'\"><div><b>'+fmtFecha(m.fecha)+'</b><span class=\"sub\">'+sub+'</span></div>'+
+        '<span class=\"'+(m.tipo==='entrada'?'mas':'menos')+'\">'+(m.tipo==='entrada'?'+':'−')+nf(m.cantidad)+'</span></button>';
+    }).join('')+'</div>';
+    if(mov.length>8)h+='<p class=\"cap\">Mostrando los 8 movimientos más recientes.</p>';
+  }
+  h+='</div>';
+
+  var claveHoy=semanaKey(hoy()), mortHoy=(mortalidadPorSemana())[claveHoy]||0, morbHoy=morbilidadSemana(claveHoy);
+  var sensLabel=db.config.percentilAlerta===60?'Alta':db.config.percentilAlerta===90?'Baja':'Media';
+  h+='<h2 class=\"sec\">Salud del lote</h2><div class=\"panel pad\">'+
+    '<div class=\"row\" style=\"padding:0 0 8px;border:0\"><span>Bajas por mortalidad esta semana</span><b>'+nf(mortHoy)+'</b></div>'+
+    '<div class=\"row\" style=\"padding:8px 0;border-top:1px solid var(--line)\"><span>Gallinas enfermas reportadas esta semana</span><b>'+nf(morbHoy)+'</b></div>'+
+    '<p class=\"lbl\" style=\"margin-top:14px\">Sensibilidad de la alerta</p>'+seg('s-sens',['Alta','Media','Baja'],sensLabel)+
+    '<p class=\"hint\" style=\"margin:6px 0 0\">Alta avisa más seguido; Baja solo avisa cuando las bajas están muy por encima de lo normal para tu galpón.</p></div>';
+
+  h+='<h2 class=\"sec\">Reporte</h2><div class=\"panel pad\"><p class=\"hint\">Genera un reporte con la producción, las ventas y los pedidos del periodo que elijas, listo para guardar o imprimir en PDF.</p>'+
+    '<button class=\"btn wide\" style=\"margin-top:0\" data-act=\"reporte\">Generar reporte en PDF</button></div>';
+
+  h+='<h2 class=\"sec\">Tus datos</h2><div class=\"panel pad\"><p class=\"hint\">Todo se guarda solo en este teléfono y funciona sin internet. Haz una copia de seguridad de vez en cuando.</p>'+
+    '<div class=\"btnrow\"><button class=\"btn sec\" data-act=\"backup\">Copia de seguridad</button><button class=\"btn sec\" data-act=\"restore\">Restaurar copia</button></div>'+
+    '<button class=\"btn sec wide\" data-act=\"importfile\" style=\"margin-top:10px\">Importar archivo JSON</button>'+
+    '<button class=\"btn warn wide\" data-act=\"reset\">Borrar todos los datos</button></div>';
+  return h;
+}
+
+function render(){
+  $('#nombre').textContent=db.config.nombre;
+  var fh=new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
+  $('#fechaHoy').textContent=fh.charAt(0).toUpperCase()+fh.slice(1);
+  var view=$('#view'), y=view.scrollTop;
+  view.innerHTML=({inicio:viewInicio,huevos:viewHuevos,pedidos:viewPedidos,ventas:viewVentas,clientes:viewClientes,ajustes:viewAjustes})[tab]();
+  view.scrollTop=y;
+  $('#fabSlot').innerHTML=tab==='huevos'?'<button class=\"fab\" data-act=\"fab\">Registrar día</button>':tab==='pedidos'?'<button class=\"fab\" data-act=\"fab\">Nuevo pedido</button>':tab==='clientes'?'<button class=\"fab\" data-act=\"fab\">Nuevo cliente</button>':'';
+  $('#nav').innerHTML=TABS.map(function(t){
+    return '<button data-tab=\"'+t[0]+'\"'+(tab===t[0]?' aria-current=\"page\"':'')+'><span class=\"ic\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">'+ICONS[t[0]]+'</svg></span>'+t[1]+'</button>';
+  }).join('');
+}
+
+/* ---------- Hoja inferior ---------- */
+var sheetOpen=false, act={};
+function openSheet(title,body){
+  $('#sheetRoot').innerHTML='<div class=\"backdrop\" data-close></div><section class=\"sheet\" role=\"dialog\" aria-modal=\"true\" aria-label=\"'+esc(title)+'\"><header><h2>'+esc(title)+'</h2><button class=\"x\" data-close aria-label=\"Cerrar\">×</button></header>'+body+'</section>';
+  sheetOpen=true; act={};
+}
+function closeSheet(){sheetOpen=false;$('#sheetRoot').innerHTML='';act={};}
+function err(m){var e=document.getElementById('err'); if(e)e.textContent=m;}
+var tt;
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show');},2800);}
+function confirmSheet(title,msg,okLabel,fn){
+  openSheet(title,'<p>'+msg+'</p><div class=\"btnrow\"><button class=\"btn warn\" data-do=\"ok\">'+okLabel+'</button><button class=\"btn sec\" data-close>Cancelar</button></div>');
+  act.ok=function(){closeSheet();fn();};
+}
+
+/* ---------- Formularios ---------- */
+function openDia(id,fecha){
+  var ex=id?db.dias.find(function(d){return d.id===id;}):null;
+  var d=ex||{fecha:fecha||fechaLibre(),huevos:'',rotos:'',alimento:'',gallinas:totalGallinas()||'',enfermas:'',notas:''};
+  openSheet(ex?'Editar recogida':'Registrar recogida',
+    fld('f-fecha','Fecha','type=\"date\"',d.fecha)+
+    fld('f-huevos','Huevos recogidos','inputmode=\"numeric\" autocomplete=\"off\"',d.huevos)+
+    fld('f-rotos','Rotos o dañados (opcional)','inputmode=\"numeric\" autocomplete=\"off\"',d.rotos)+
+    fld('f-alim','Alimento echado (kg)','inputmode=\"decimal\" autocomplete=\"off\"',d.alimento)+
+    fld('f-gal','Gallinas ese día','inputmode=\"numeric\" autocomplete=\"off\"',d.gallinas)+
+    fld('f-enf','Gallinas enfermas hoy (opcional)','inputmode=\"numeric\" autocomplete=\"off\"',d.enfermas)+
+    fld('f-notas','Notas (opcional)','autocomplete=\"off\"',d.notas)+
+    '<div class=\"prev\" id=\"prev\"></div><p class=\"err\" id=\"err\" role=\"alert\"></p>'+
+    '<div class=\"btnrow\"><button class=\"btn\" data-do=\"save\">Guardar</button>'+(ex?'<button class=\"btn warn\" data-do=\"del\">Eliminar</button>':'')+'</div>');
+  act.input=function(){
+    var h=Math.round(num(val('f-huevos'))), r=Math.round(num(val('f-rotos'))), g=Math.round(num(val('f-gal')));
+    $('#prev').innerHTML='<b>'+canastasTxt(Math.max(0,h-r))+'</b>'+(g>0?'<br>Postura: <b>'+pctTxt(h/g*100)+'</b>':'');
+  };
+  act.input();
+  act.save=function(){
+    var fecha=val('f-fecha'), hv=val('f-huevos').trim();
+    if(!fecha)return err('Elige la fecha.');
+    if(hv==='')return err('Escribe cuántos huevos recogiste.');
+    var huevos=Math.round(num(hv)), rotos=Math.round(num(val('f-rotos'))), gal=Math.round(num(val('f-gal')));
+    if(rotos>huevos)return err('Los rotos no pueden ser más que los huevos recogidos.');
+    if(db.dias.some(function(x){return x.fecha===fecha&&(!ex||x.id!==ex.id);}))return err('Ya hay una recogida en esa fecha. Ábrela desde la lista para editarla.');
+    var rec={id:ex?ex.id:uid(),fecha:fecha,huevos:huevos,rotos:rotos,alimento:num(val('f-alim')),gallinas:gal,enfermas:Math.round(num(val('f-enf')))||0,notas:val('f-notas').trim()};
+    if(ex)Object.assign(ex,rec); else db.dias.push(rec);
+    save();closeSheet();render();toast('Recogida guardada');
+  };
+  act.del=function(){
+    confirmSheet('¿Eliminar esta recogida?','Se quitan los huevos y el alimento de ese día.','Eliminar',function(){
+      db.dias=db.dias.filter(function(x){return x.id!==ex.id;});save();render();toast('Recogida eliminada');
+    });
+  };
+  if(!ex)setTimeout(function(){var i=document.getElementById('f-huevos');if(i)i.focus();},60);
+}
+
+function openPedido(id,clienteNombre){
+  var ex=id?db.pedidos.find(function(p){return p.id===id;}):null;
+  var precioIni=db.config.precio||'';
+  if(!ex&&clienteNombre){
+    var cliPre=db.clientes.find(function(x){return x.nombre.trim().toLowerCase()===clienteNombre.trim().toLowerCase();});
+    if(cliPre&&cliPre.precio)precioIni=cliPre.precio;
+  }
+  var p=ex||{cliente:clienteNombre||'',canastas:'',sueltos:'',precio:precioIni,fecha:hoy(),pago:'Pendiente',entrega:'Encargo',fechaEntrega:'',notas:''};
+  var pc=ex?pcDe(ex):pcBase();
+  var uni=ex?unidadDe(ex):{u:'Canasta',n:''};
+  var eggs0=ex?huevosPedido(ex):pc;
+  openSheet(ex?'Editar pedido':'Nuevo pedido',
+    '<label class=\"f\"><span>Cliente (opcional)</span><input id=\"p-cli\" autocomplete=\"off\" value=\"'+esc(p.cliente)+'\"></label>'+
+    '<label class=\"f\"><span>Vendido por</span><select id=\"p-uni\">'+
+      [['Canasta','Canasta ('+pc+' huevos)'],['Media','Media canasta ('+Math.round(pc/2)+' huevos)'],['Unidad','Unidad (huevo suelto)']].map(function(o){
+        return '<option value=\"'+o[0]+'\"'+(o[0]===uni.u?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></label>'+
+    fld('p-cant','Cantidad de huevos','inputmode=\"numeric\" autocomplete=\"off\"',eggs0)+
+    fld('p-pre','Precio por canasta (pesos)','inputmode=\"numeric\" autocomplete=\"off\"',p.precio)+
+    fld('p-fec','Fecha del pedido','type=\"date\"',p.fecha)+
+    '<p class=\"lbl\">Pago</p>'+seg('s-pago',['Pendiente','Pagado'],p.pago)+
+    '<p class=\"lbl\">Entrega</p>'+seg('s-ent',['Encargo','Entregado'],p.entrega)+
+    fld('p-fent','Entregar el (opcional)','type=\"date\"',p.fechaEntrega)+
+    fld('p-notas','Notas (opcional)','autocomplete=\"off\"',p.notas)+
+    '<div class=\"prev\" id=\"prev\"></div><p class=\"err\" id=\"err\" role=\"alert\"></p>'+
+    '<div class=\"btnrow\"><button class=\"btn\" data-do=\"save\">Guardar</button>'+(ex?'<button class=\"btn warn\" data-do=\"del\">Eliminar</button>':'')+'</div>');
+  function calc(){
+    var u=val('p-uni'), eggs=Math.max(0,Math.round(num(val('p-cant')))), pr=num(val('p-pre'));
+    return {u:u,n:Math.round((u==='Canasta'?eggs/pc:(u==='Media'?eggs/(pc/2):eggs))*100)/100,pr:pr,eggs:eggs,c:Math.floor(eggs/pc),s:eggs%pc,total:Math.round(eggs*pr/pc)};
+  }
+  act.input=function(){
+    var k=calc(), st=stock(ex&&ex.id);
+    var h='<b>'+money(k.total)+'</b> por '+nf(k.eggs)+' huevos ('+canastasTxt(k.eggs,pc)+')';
+    if(segVal('s-ent')==='Entregado'&&k.eggs>st.libres)h+='<br><span class=\"warnt\">En el galpón hay '+nf(Math.max(0,st.libres))+' huevos libres, menos de los que vas a entregar.</span>';
+    $('#prev').innerHTML=h;
+  };
+  act.input();
+  document.getElementById('p-cli').addEventListener('input',function(){
+    if(ex)return;
+    var nom=this.value.trim().toLowerCase(), cli=db.clientes.find(function(x){return x.nombre.trim().toLowerCase()===nom;});
+    var campoPrecio=document.getElementById('p-pre');
+    if(cli&&cli.precio&&campoPrecio&&Number(num(campoPrecio.value))===Number(db.config.precio||0)){
+      campoPrecio.value=cli.precio; act.input();
+    }
+  });
+  document.getElementById('p-uni').addEventListener('change',function(){
+    var u=this.value, c=document.getElementById('p-cant');
+    c.value=u==='Canasta'?pc:(u==='Media'?Math.round(pc/2):'');
+    act.input();
+    if(u==='Unidad')c.focus();
+  });
+  act.save=function(){
+    var k=calc();
+    if(k.eggs<=0)return err('Escribe la cantidad que lleva el pedido.');
+    var rec={id:ex?ex.id:uid(),cliente:val('p-cli').trim(),canastas:k.c,sueltos:k.s,unidad:k.u,cantidad:k.n,precio:k.pr,pc:pc,total:k.total,fecha:val('p-fec')||hoy(),
+      pago:segVal('s-pago'),entrega:segVal('s-ent'),fechaEntrega:val('p-fent'),notas:val('p-notas').trim()};
+    if(ex)Object.assign(ex,rec); else db.pedidos.push(rec);
+    save();closeSheet();render();toast('Pedido guardado');
+  };
+  act.del=function(){
+    confirmSheet('¿Eliminar este pedido?','Se quita del listado y de las cuentas.','Eliminar',function(){
+      db.pedidos=db.pedidos.filter(function(x){return x.id!==ex.id;});save();render();toast('Pedido eliminado');
+    });
+  };
+}
+
+function openGal(tipo,id){
+  var ex=id?db.gallinas.find(function(m){return m.id===id;}):null;
+  if(ex)tipo=ex.tipo;
+  var esIn=tipo==='entrada';
+  var m=ex||{fecha:hoy(),cantidad:'',motivo:esIn?(db.gallinas.length?'':'Lote inicial'):'',detalle:''};
+  var sug=['Lote inicial','Compra','Lote nuevo'];
+  var causaActual=ex&&!esIn?(ex.causa||(['Mortalidad','Venta','Descarte'].indexOf(ex.motivo)>=0?ex.motivo:'Mortalidad')):'Mortalidad';
+  var signed=function(x){return x.tipo==='entrada'?x.cantidad:-x.cantidad;};
+  var body=fld('g-fec','Fecha','type=\"date\"',m.fecha)+fld('g-can','Cantidad de gallinas','inputmode=\"numeric\" autocomplete=\"off\"',m.cantidad);
+  if(esIn){
+    body+='<label class=\"f\"><span>Motivo (opcional)</span><input id=\"g-mot\" list=\"motivos\" autocomplete=\"off\" value=\"'+esc(m.motivo)+'\"></label>'+
+      '<datalist id=\"motivos\">'+sug.map(function(s){return '<option value=\"'+s+'\">';}).join('')+'</datalist>';
+  }else{
+    body+='<p class=\"lbl\">Causa</p>'+seg('s-causa',['Mortalidad','Venta','Descarte'],causaActual)+
+      fld('g-det','Detalle (opcional)','autocomplete=\"off\"',ex?(ex.detalle||''):'')+
+      '<p class=\"hint\" style=\"margin:0 0 10px\">Marca "Mortalidad" para que estas bajas cuenten en la alerta de mortalidad.</p>';
+  }
+  body+='<p class=\"err\" id=\"err\" role=\"alert\"></p><div class=\"btnrow\"><button class=\"btn\" data-do=\"save\">Guardar</button>'+(ex?'<button class=\"btn warn\" data-do=\"del\">Eliminar</button>':'')+'</div>';
+  openSheet(ex?'Editar movimiento':(esIn?'Entraron gallinas':'Salieron gallinas'),body);
+  act.save=function(){
+    var c=Math.round(num(val('g-can')));
+    if(c<=0)return err('Escribe cuántas gallinas son.');
+    var rec=esIn?{id:ex?ex.id:uid(),tipo:'entrada',fecha:val('g-fec')||hoy(),cantidad:c,motivo:val('g-mot').trim()}:
+      {id:ex?ex.id:uid(),tipo:'baja',fecha:val('g-fec')||hoy(),cantidad:c,causa:segVal('s-causa'),detalle:val('g-det').trim()};
+    var nuevo=totalGallinas()-(ex?signed(ex):0)+signed(rec);
+    if(nuevo<0)return err('No pueden salir más gallinas de las que hay.');
+    if(ex)Object.assign(ex,rec); else db.gallinas.push(rec);
+    save();closeSheet();render();toast('Movimiento guardado');
+  };
+  act.del=function(){
+    if(totalGallinas()-signed(ex)<0)return err('Si quitas esta entrada, el total de gallinas quedaría en negativo.');
+    confirmSheet('¿Eliminar este movimiento?','El total de gallinas se recalcula.','Eliminar',function(){
+      db.gallinas=db.gallinas.filter(function(x){return x.id!==ex.id;});save();render();toast('Movimiento eliminado');
+    });
+  };
+  if(!ex)setTimeout(function(){var i=document.getElementById('g-can');if(i)i.focus();},60);
+}
+
+function openBackup(){
+  var txt=JSON.stringify(db);
+  openSheet('Copia de seguridad',
+    '<p class=\"hint\">Guarda este texto en un lugar seguro (una nota, un correo o un chat). Con él recuperas todo si cambias de celular o reinstalas la app.</p>'+
+    '<textarea id=\"b-txt\" readonly>'+esc(txt)+'</textarea><div class=\"btnrow\" style=\"margin-top:12px\"><button class=\"btn\" data-do=\"copy\">Copiar texto</button><button class=\"btn sec\" data-do=\"down\">Descargar archivo</button></div>');
+  act.copy=function(){
+    var ta=document.getElementById('b-txt');
+    var ok=function(){toast('Copia lista. Pégala en un lugar seguro.');};
+    var fallback=function(){ta.focus();ta.select();try{document.execCommand('copy');ok();}catch(e){toast('Mantén presionado el texto para copiarlo.');}};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fallback);}else fallback();
+  };
+  act.down=function(){
+    try{
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));
+      a.download='galpon-copia-'+hoy()+'.json';
+      document.body.appendChild(a);a.click();a.remove();
+      toast('Si no se descargó, usa Copiar texto.');
+    }catch(e){toast('No se pudo descargar. Usa Copiar texto.');}
+  };
+}
+
+function openRestore(){
+  openSheet('Restaurar copia',
+    '<p class=\"hint\">Pega aquí el texto de tu copia de seguridad. Esto reemplaza todo lo que tienes ahora.</p>'+
+    '<textarea id=\"r-txt\" placeholder=\"Pega la copia aquí\"></textarea><p class=\"err\" id=\"err\" role=\"alert\"></p>'+
+    '<button class=\"btn wide\" data-do=\"go\" style=\"margin-top:0\">Restaurar y reemplazar datos</button>');
+  act.go=function(){
+    try{
+      var o=JSON.parse(val('r-txt'));
+      if(!Array.isArray(o.dias)||!Array.isArray(o.pedidos)||!Array.isArray(o.gallinas))throw new Error('x');
+      var d=defaults();
+      db={config:Object.assign(d.config,o.config||{}),gallinas:o.gallinas,dias:o.dias,pedidos:o.pedidos,clientes:o.clientes||[]};
+      save();closeSheet();render();toast('Copia restaurada');
+    }catch(e){err('Ese texto no es una copia válida. Cópialo completo, desde la primera llave.');}
+  };
+}
+
+function openImportFile(){
+  openSheet('Importar copia JSON',
+    '<p class=\"hint\">Selecciona un archivo .json guardado previamente en tu teléfono.</p>'+
+    '<input id=\"import-file\" type=\"file\" accept=\"application/json\" /><p class=\"err\" id=\"err\" role=\"alert\"></p>'+
+    '<button class=\"btn wide\" data-do=\"go\" style=\"margin-top:10px\">Importar archivo</button>');
+  act.go=function(){
+    var file=document.getElementById('import-file').files && document.getElementById('import-file').files[0];
+    if(!file){err('Primero selecciona un archivo JSON.');return;}
+    var reader=new FileReader();
+    reader.onload=function(){
+      try{
+        var o=JSON.parse(reader.result);
+        if(!Array.isArray(o.dias)||!Array.isArray(o.pedidos)||!Array.isArray(o.gallinas))throw new Error('x');
+        var d=defaults();
+        db={config:Object.assign(d.config,o.config||{}),gallinas:o.gallinas,dias:o.dias,pedidos:o.pedidos,clientes:o.clientes||[]};
+        save();closeSheet();render();toast('Archivo importado');
+      }catch(e){err('El archivo no es una copia válida.');}
+    };
+    reader.readAsText(file);
+  };
+}
+
+function openReporte(){
+  openSheet('Generar reporte',
+    '<p class=\"lbl\">Periodo del reporte</p>'+seg('r-per',['Hoy','7 días','30 días','Todo'],'30 días')+
+    '<p class=\"hint\">Se abrirá el diálogo para imprimir de tu teléfono. Ahí eliges "Guardar como PDF" para guardarlo sin necesidad de internet.</p>'+
+    '<button class=\"btn wide\" style=\"margin-top:0\" data-do=\"go\">Generar PDF</button>');
+  act.go=function(){
+    var per=segVal('r-per');
+    var dd=per==='Hoy'?hoy():per==='7 días'?haceDias(6):per==='30 días'?haceDias(29):'0000-00-00';
+    generarReporte(dd,per);
+    closeSheet();
+  };
+}
+
+function generarReporte(dd,perLabel){
+  var dias=db.dias.filter(function(d){return d.fecha>=dd;}).sort(function(a,b){return a.fecha.localeCompare(b.fecha);});
+  var rec=sum(dias,function(d){return d.huevos;}), rotos=sum(dias,function(d){return d.rotos||0;});
+  var gd=dias.filter(function(d){return d.gallinas>0;}).length;
+  var pos=gd>0?sum(dias.filter(function(d){return d.gallinas>0;}),function(d){return d.huevos/d.gallinas;})/gd*100:null;
+  var alim=sum(dias,function(d){return d.alimento||0;});
+  var v=ventasResumen(dd);
+  var ps=v.ps.slice().sort(function(a,b){return a.fecha.localeCompare(b.fecha);});
+  var tg=totalGallinas();
+  var hoyTxt=new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+  var h='<h1>'+esc(db.config.nombre)+'</h1><p class=\"sub\">Reporte del periodo: '+esc(perLabel)+' · Generado el '+hoyTxt+'</p>';
+
+  h+='<h2>Resumen</h2><table><tbody>'+
+    '<tr><td>Gallinas en el galpón</td><td>'+nf(tg)+'</td></tr>'+
+    '<tr><td>Huevos recogidos</td><td>'+nf(rec)+(rotos?' ('+nf(rotos)+' rotos)':'')+'</td></tr>'+
+    '<tr><td>Postura promedio</td><td>'+(pos==null?'–':pctTxt(pos))+'</td></tr>'+
+    '<tr><td>Alimento echado</td><td>'+nf1(alim)+' kg</td></tr>'+
+    '<tr><td>Vendido</td><td>'+money(v.total)+'</td></tr>'+
+    '<tr><td>Cobrado</td><td>'+money(v.cobrado)+'</td></tr>'+
+    '<tr><td>Falta por cobrar</td><td>'+money(v.pend)+'</td></tr>'+
+    '</tbody></table>';
+
+  h+='<h2>Huevos vendidos por tipo</h2><table><thead><tr><th>Tipo</th><th>Cantidad</th><th>Huevos</th></tr></thead><tbody>'+
+    '<tr><td>Canastas</td><td>'+nf1(v.grp.Canasta.n)+'</td><td>'+nf(v.grp.Canasta.h)+'</td></tr>'+
+    '<tr><td>Medias canastas</td><td>'+nf1(v.grp.Media.n)+'</td><td>'+nf(v.grp.Media.h)+'</td></tr>'+
+    '<tr><td>Huevos sueltos</td><td>'+nf(v.grp.Unidad.n)+'</td><td>'+nf(v.grp.Unidad.h)+'</td></tr>'+
+    '</tbody></table>';
+
+  h+='<h2>Recogidas de huevos</h2>';
+  h+=dias.length?('<table><thead><tr><th>Fecha</th><th>Huevos</th><th>Rotos</th><th>Postura</th><th>Alimento</th></tr></thead><tbody>'+
+    dias.map(function(d){var p=posturaDia(d);return '<tr><td>'+fmtFecha(d.fecha)+'</td><td>'+nf(d.huevos)+'</td><td>'+nf(d.rotos||0)+'</td><td>'+(p==null?'–':pctTxt(p))+'</td><td>'+(d.alimento?nf1(d.alimento)+' kg':'–')+'</td></tr>';}).join('')+
+    '</tbody></table>'):'<p class=\"sub\">Sin recogidas en este periodo.</p>';
+
+  h+='<h2>Pedidos</h2>';
+  h+=ps.length?('<table><thead><tr><th>Fecha</th><th>Cliente</th><th>Cantidad</th><th>Total</th><th>Pago</th><th>Entrega</th></tr></thead><tbody>'+
+    ps.map(function(p){return '<tr><td>'+fmtFecha(p.fecha)+'</td><td>'+(esc(p.cliente)||'Sin nombre')+'</td><td>'+esc(pedidoTxt(p))+'</td><td>'+money(p.total||0)+'</td><td>'+p.pago+'</td><td>'+p.entrega+'</td></tr>';}).join('')+
+    '</tbody></table>'):'<p class=\"sub\">Sin pedidos en este periodo.</p>';
+
+  $('#reporte').innerHTML=h;
+  setTimeout(function(){window.print();},80);
+}
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click',function(e){
+  var nav=e.target.closest('#nav button');
+  if(nav){tab=nav.dataset.tab;$('#view').scrollTop=0;render();return;}
+
+  var ts=e.target.closest('#s-tema button');
+  if(ts){
+    Array.prototype.forEach.call(ts.parentNode.children,function(b){b.classList.toggle('on',b===ts);b.setAttribute('aria-checked',b===ts);});
+    db.config.tema=ts.dataset.v;save();aplicarTema();return;
+  }
+  var ss=e.target.closest('#s-sens button');
+  if(ss){
+    Array.prototype.forEach.call(ss.parentNode.children,function(b){b.classList.toggle('on',b===ss);b.setAttribute('aria-checked',b===ss);});
+    var mapa={Alta:60,Media:75,Baja:90};
+    db.config.percentilAlerta=mapa[ss.dataset.v]||75;save();return;
+  }
+
+  var t=e.target.closest('#view [data-act], #fabSlot [data-act]');
+  if(!t)return;
+  var a=t.dataset.act, id=t.dataset.id, p;
+  switch(a){
+    case 'hoy':{var ex=db.dias.find(function(d){return d.fecha===hoy();});openDia(ex?ex.id:null,hoy());break;}
+    case 'dia-edit':openDia(id);break;
+    case 'pedido-edit':openPedido(id);break;
+    case 'gal-in':openGal('entrada');break;
+    case 'gal-out':openGal('baja');break;
+    case 'gal-edit':openGal(null,id);break;
+    case 'cli-new':openClienteForm(null,null);break;
+    case 'cli-open':fichaCliente(id);break;
+    case 'cli-add':openClienteForm(null,t.dataset.nom);break;
+    case 'fab':if(tab==='huevos')openDia(null);else if(tab==='pedidos')openPedido(null);else if(tab==='clientes')openClienteForm(null,null);break;
+    case 'periodo':periodo=t.dataset.v;render();break;
+    case 'filtro':filtro=t.dataset.v;render();break;
+    case 'tog-pago':p=db.pedidos.find(function(x){return x.id===id;});if(p){p.pago=p.pago==='Pagado'?'Pendiente':'Pagado';save();render();toast(p.pago==='Pagado'?'Marcado como pagado':'Marcado como pendiente de pago');}break;
+    case 'tog-ent':p=db.pedidos.find(function(x){return x.id===id;});if(p){p.entrega=p.entrega==='Entregado'?'Encargo':'Entregado';if(p.entrega==='Entregado')p.fechaEntrega=p.fechaEntrega||hoy();save();render();toast(p.entrega==='Entregado'?'Marcado como entregado':'Marcado como encargo');}break;
+    case 'cobrar':p=db.pedidos.find(function(x){return x.id===id;});if(p){p.pago='Pagado';save();render();toast('Pedido marcado como pagado');}break;
+    case 'entregar':p=db.pedidos.find(function(x){return x.id===id;});if(p){p.entrega='Entregado';p.fechaEntrega=p.fechaEntrega||hoy();save();render();toast('Pedido marcado como entregado');}break;
+    case 'cfg-save':{
+      db.config.nombre=val('c-nombre').trim()||'Mi galpón';
+      var pc=Math.round(num(val('c-pc')));
+      db.config.porCanasta=pc>0?pc:30;
+      db.config.precio=Math.max(0,Math.round(num(val('c-precio'))));
+      save();render();toast('Ajustes guardados');break;}
+    case 'backup':openBackup();break;
+    case 'restore':openRestore();break;
+    case 'importfile':openImportFile();break;
+    case 'reporte':openReporte();break;
+    case 'reset':confirmSheet('¿Borrar todos los datos?','Se borran recogidas, pedidos y gallinas de este teléfono. Esto no se puede deshacer. Si no tienes una copia de seguridad, hazla antes.','Borrar todo',function(){
+      db=defaults();save();tab='inicio';render();toast('Datos borrados');});break;
+  }
+});
+
+document.addEventListener('input',function(e){
+  if(e.target && e.target.id==='pedidoSearch'){
+    pedidoBuscar=e.target.value;
+    if(tab==='pedidos')render();
+  }
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&sheetOpen){closeSheet();return;}
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[role="button"][data-act]')){e.preventDefault();e.target.click();}
+});
+var root=$('#sheetRoot');
+root.addEventListener('click',function(e){
+  if(e.target.closest('[data-close]')){closeSheet();return;}
+  var op=e.target.closest('[data-open-pedido]');
+  if(op){openPedido(op.dataset.id);return;}
+  var s=e.target.closest('.seg button');
+  if(s){
+    Array.prototype.forEach.call(s.parentNode.children,function(b){b.classList.toggle('on',b===s);b.setAttribute('aria-checked',b===s);});
+    if(act.input)act.input();return;
+  }
+  var b=e.target.closest('[data-do]');
+  if(b&&act[b.dataset.do])act[b.dataset.do]();
+});
+root.addEventListener('input',function(){if(act.input)act.input();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&!sheetOpen)render();});
+
+render();
+})();
+</script>
+</body>
+</html>
